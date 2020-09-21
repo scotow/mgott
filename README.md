@@ -1,6 +1,6 @@
 # mgott
 
-An HTTP to MQTT publish proxy.
+A HTTP to MQTT publish proxy.
 
 Send a POST request on `/publish` using the following body as a template:
 
