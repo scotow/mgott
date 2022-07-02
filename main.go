@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"math/rand"
 	"time"
+	"strconv"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
@@ -34,7 +36,8 @@ func handlePublish(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	opts := mqtt.NewClientOptions().AddBroker(fmt.Sprintf("tcp://%s:%d", pr.Host, pr.Port)).SetClientID("mgott")
+	rand := rand.New(rand.NewSource(time.Now().UnixNano()));
+	opts := mqtt.NewClientOptions().AddBroker(fmt.Sprintf("tcp://%s:%d", pr.Host, pr.Port)).SetClientID("mgott-" + strconv.Itoa(rand.Int()))
 	opts.SetKeepAlive(2 * time.Second)
 
 	if pr.Username != nil && pr.Password != nil {
@@ -56,6 +59,9 @@ func handlePublish(w http.ResponseWriter, r *http.Request) {
 	}
 
 	c.Disconnect(0)
+
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, http.StatusText(http.StatusOK))
 }
 
 func main() {
